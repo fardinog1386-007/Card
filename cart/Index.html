@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> بله برون </title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Markazi+Text:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #2d1b3d 50%, #1a1a2e 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Markazi Text', 'Amiri', serif;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* ذرات براق پس‌زمینه */
+    .sparkle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #ffd700;
+        border-radius: 50%;
+        opacity: 0;
+        animation: twinkle 3s infinite;
+        pointer-events: none;
+        box-shadow: 0 0 6px #ffd700;
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0; transform: scale(0); }
+        50% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ---------- صحنه پاکت ---------- */
+    .scene {
+        perspective: 1200px;
+        position: relative;
+    }
+
+    .envelope-wrapper {
+        position: relative;
+        width: 360px;
+        height: 250px;
+        cursor: pointer;
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .envelope-wrapper:hover {
+        transform: scale(1.05) translateY(-5px);
+    }
+
+    .envelope-wrapper:hover .wax-seal {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.3);
+    }
+
+    /* بدنه پشت پاکت */
+    .envelope-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: 
+            linear-gradient(145deg, rgba(201,162,75,0.9), rgba(168,127,46,0.9)),
+            repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(139,90,20,0.08) 10px,
+                rgba(139,90,20,0.08) 20px
+            );
+        border-radius: 10px;
+        box-shadow: 
+            0 25px 70px rgba(0,0,0,0.6),
+            0 10px 30px rgba(0,0,0,0.3),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+        z-index: 1;
+    }
+
+    .envelope-back::before {
+        content: '';
+        position: absolute;
+        inset: 8px;
+        border: 1px solid rgba(212,175,94,0.4);
+        border-radius: 6px;
+        pointer-events: none;
+    }
+
+
+    /* کارت داخل پاکت */
+    .card-inner {
+        position: absolute;
+        left: 14px;
+        top: 10px;
+        width: calc(100% - 28px);
+        height: calc(100% - 20px);
+        z-index: 2;
+        transition: transform 1.2s cubic-bezier(0.34, 1.3, 0.5, 1);
+        transform: translateY(0);
+    }
+
+    .card-inner > div {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-inner > div::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: 
+            radial-gradient(ellipse at 30% 20%, rgba(212,175,94,0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 70% 80%, rgba(212,175,94,0.1) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .card-inner > div::after {
+        content: '💐';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 42px;
+        opacity: 0.15;
+        filter: blur(1px);
+    }
+
+    .envelope-wrapper.open .card-inner {
+        transform: translateY(-65%);
+    }
+
+    /* جیب جلوی پاکت */
+    .envelope-front {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        z-index: 3;
+        background: 
+            linear-gradient(160deg, rgba(224,190,106,0.95) 0%, rgba(201,162,75,0.95) 100%),
+            repeating-linear-gradient(
+                -45deg,
+                transparent,
+                transparent 8px,
+                rgba(139,90,20,0.06) 8px,
+                rgba(139,90,20,0.06) 16px
+            );
+        clip-path: polygon(0 32%, 50% 68%, 100% 32%, 100% 100%, 0 100%);
+        box-shadow: 
+            inset 0 -4px 15px rgba(0,0,0,0.12),
+            inset 0 2px 5px rgba(255,255,255,0.15);
+    }
+
+    .envelope-front::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40%;
+        background: linear-gradient(to top, rgba(0,0,0,0.08), transparent);
+        pointer-events: none;
+    }
+
+    /* درِ پاکت */
+    .envelope-flap {
+        position: absolute;
+        width: 100%;
+        height: 58%;
+        top: 0;
+        left: 0;
+        z-index: 4;
+        background: 
+            linear-gradient(180deg, #d4af5e 0%, #c4a055 30%, #b8933f 100%);
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+        transform-origin: top center;
+        transition: transform 1s cubic-bezier(0.6, 0, 0.3, 1);
+        border-radius: 10px 10px 0 0;
+        backface-visibility: hidden;
+        box-shadow: 
+            inset 0 2px 5px rgba(255,255,255,0.2),
+            0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .envelope-flap::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    }
+
+    .envelope-wrapper.open .envelope-flap {
+        transform: rotateX(180deg);
+        z-index: 1;
+    }
+
+    /* مُهر موم */
+    .wax-seal {
+        position: absolute;
+        top: 52%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 64px;
+        height: 64px;
+        background: 
+            radial-gradient(circle at 30% 30%, #d44a3a, #c0392b 40%, #7b1d12 100%);
+        border-radius: 50%;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f5d5d0;
+        font-size: 28px;
+        box-shadow: 
+            0 6px 15px rgba(0,0,0,0.5),
+            0 2px 5px rgba(0,0,0,0.3),
+            inset 0 2px 6px rgba(255,255,255,0.25),
+            inset 0 -2px 4px rgba(0,0,0,0.2);
+        transition: opacity 0.5s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .wax-seal::before {
+        content: '';
+        position: absolute;
+        inset: 4px;
+        border: 2px solid rgba(255,255,255,0.15);
+        border-radius: 50%;
+    }
+
+    .wax-seal::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border: 1px solid rgba(192,57,43,0.3);
+        border-radius: 50%;
+    }
+
+    .envelope-wrapper.open .wax-seal {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0) rotate(180deg);
+    }
+
+    .click-hint {
+        position: absolute;
+        bottom: -55px;
+        width: 100%;
+        text-align: center;
+        color: #d4af5e;
+        font-size: 20px;
+        animation: pulseHint 1.6s infinite;
+        transition: opacity 0.5s;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        letter-spacing: 1px;
+    }
+
+    .envelope-wrapper.open .click-hint {
+        opacity: 0;
+    }
+
+    @keyframes pulseHint {
+        0%, 100% { opacity: 0.4; transform: translateY(0); }
+        50% { opacity: 1; transform: translateY(-3px); }
+    }
+
+    /* ---------- کارت اصلی بزرگ ---------- */
+    .main-card-overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.8s;
+        padding: 20px;
+    }
+
+    .main-card-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .wedding-card {
+        position: relative;
+        width: 440px;
+        max-width: 90vw;
+        min-height: 620px;
+        background: linear-gradient(160deg, #fffdf5 0%, #fdf6e3 50%, #f9efD8 100%);
+        border-radius: 16px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,94,0.4);
+        padding: 55px 35px 45px;
+        text-align: center;
+        transform: scale(0.3) translateY(200px);
+        transition: transform 1s cubic-bezier(0.34, 1.4, 0.4, 1);
+        overflow: visible; /* برای دیده شدن کامل گل‌ها در خارج کادر */
+    }
+
+    .main-card-overlay.show .wedding-card {
+        transform: scale(1) translateY(0);
+    }
+
+    /* قاب طلایی داخلی */
+    .gold-frame {
+        position: absolute;
+        inset: 12px;
+        border: 2px solid #d4af37;
+        border-radius: 10px;
+        pointer-events: none;
+    }
+
+    .gold-frame::before {
+        content: '';
+        position: absolute;
+        inset: 5px;
+        border: 1px solid rgba(212,175,55,0.5);
+        border-radius: 7px;
+    }
+
+    /* ---------- عکس گل واقعی گوشه‌ها ---------- */
+    .rose-img {
+    position: absolute;
+    width: 150px; /* یکم سایزش رو جمع‌وجورتر کردیم */
+    height: auto;
+    z-index: 20;
+    /* سایه نرم‌تر و طبیعی‌تر */
+    filter: drop-shadow(2px 8px 12px rgba(0, 0, 0, 0.25)); 
+    /* انیمیشن نرم‌تر با زمان طولانی‌تر */
+    animation: roseSway 6s ease-in-out infinite; 
+    pointer-events: none;
+}
+
+/* گل بالا-چپ */
+.rose-tl { 
+    top: -25px; 
+    left: -25px; 
+}
+
+/* گل پایین-راست */
+.rose-br { 
+    bottom: -25px; 
+    right: -25px; 
+    /* به جای چرخش ۱۸۰ درجه کامل، فقط قرینه‌اش می‌کنیم تا طبیعی بمونه */
+    transform: scaleX(-1) scaleY(-1); 
+    animation-name: roseSwayBr;
+    animation-delay: 3s; 
+}
+
+/* حرکت بسیار ملایم برای گل بالا */
+@keyframes roseSway {
+    0%, 100% { 
+        transform: rotate(0deg) translateY(0px) scale(1); 
+    }
+    50% { 
+        transform: rotate(2deg) translateY(-4px) scale(1.02); 
+    }
+}
+
+/* حرکت ملایم برای گل پایین */
+@keyframes roseSwayBr {
+    0%, 100% { 
+        transform: scaleX(-1) scaleY(-1) rotate(0deg) translateY(0px); 
+    }
+    50% { 
+        transform: scaleX(-1) scaleY(-1) rotate(-2deg) translateY(-4px); 
+    }
+}
+
+    /* ---------- محتوای کارت ---------- */
+    .card-content {
+        position: relative;
+        z-index: 5;
+    }
+
+    .bismillah {
+        color: #b8933f;
+        font-size: 19px;
+        margin-bottom: 12px;
+        font-family: 'Amiri', serif;
+    }
+
+    .invite-title {
+        font-size: 30px;
+        color: #8a6d2b;
+        font-weight: 700;
+        margin-bottom: 6px;
+        text-shadow: 1px 1px 2px rgba(212,175,55,0.3);
+    }
+
+    .divider {
+        width: 130px;
+        height: 2px;
+        margin: 12px auto;
+        background: linear-gradient(90deg, transparent, #d4af37, transparent);
+        position: relative;
+    }
+
+    .divider::after {
+        content: '❦';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fdf6e3;
+        padding: 0 10px;
+        color: #d4af37;
+        font-size: 18px;
+    }
+
+    .rings-container {
+    margin: 15px auto -10px auto;
+    width: 300px;
+    height: 170px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    opacity: 0;
+    
+    transition: clip-path 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+}
+
+
+.main-card-overlay.show .rings-container {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    
+    transition-delay: 0.5s;
+}
+
+    .rings-img {
+        width: 100% !important;  
+        height: 100% !important;    
+        object-fit: contain;   
+        filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+    @keyframes ringsFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    .ring-shine {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px 4px rgba(255,255,255,0.9);
+        animation: shineBlink 2.2s infinite;
+    }
+
+    @keyframes shineBlink {
+        0%, 100% { opacity: 0; transform: scale(0.4); }
+        50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .names {
+        font-size: 38px;
+        font-weight: 700;
+        color: #7a1f2b;
+        margin: 14px 0 4px;
+        font-family: 'Amiri', serif;
+    }
+
+    .names .and {
+        color: #b8933f;
+        font-size: 28px;
+        margin: 0 8px;
+    }
+
+    .poem {
+        color: #8a7050;
+        font-size: 19px;
+        line-height: 1.9;
+        margin: 10px 0 16px;
+        font-style: italic;
+    }
+
+    .date-box {
+        display: inline-block;
+        background: linear-gradient(145deg, #f5e6c4, #ecd9a8);
+        border: 1px solid #d4af37;
+        border-radius: 30px;
+        padding: 10px 32px;
+        color: #7a5c1e;
+        font-size: 21px;
+        font-weight: 600;
+        margin-bottom: 14px;
+        box-shadow: 0 3px 8px rgba(180,140,50,0.25);
+    }
+
+    .venue {
+        color: #9b7b4f;
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+    .venue strong { color: #7a5c1e; }
+
+    /* قلب‌های شناور */
+    .heart {
+        position: fixed;
+        bottom: -30px;
+        font-size: 22px;
+        animation: heartRise linear forwards;
+        pointer-events: none;
+        z-index: 200;
+    }
+
+    @keyframes heartRise {
+        to {
+            transform: translateY(-110vh) rotate(35deg);
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .names { font-size: 30px; }
+        .invite-title { font-size: 25px; }
+        .wedding-card { min-height: 560px; padding: 45px 22px 35px; }
+        .rose-img { width: 130px; }
+        .rose-tl { top: -25px; left: -25px; }
+        .rose-br { bottom: -25px; right: -25px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- صحنه پاکت -->
+<div class="scene">
+    <div class="envelope-wrapper" id="envelope">
+        <div class="envelope-back"></div>
+
+        <div class="card-inner">
+            <div style="width:100%;height:100%;background:linear-gradient(160deg,#fffdf5,#f9efD8);border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #d4af37;box-shadow: inset 0 0 20px rgba(212,175,94,0.1);">
+            </div>
+        </div>
+
+        <div class="envelope-front"></div>
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">❤</div>
+        <div class="click-hint">✉ برای باز کردن پاکت کلیک کنید ✉</div>
+    </div>
+</div>
+
+<!-- کارت اصلی -->
+<div class="main-card-overlay" id="cardOverlay">
+    <div class="wedding-card">
+        <div class="gold-frame"></div>
+
+        <!-- عکس واقعی گل رز گوشه بالا-چپ -->
+        <img src="r1.png" class="rose-img rose-tl" alt="عکس گل رز">
+
+        <!-- عکس واقعی گل رز گوشه پایین-راست -->
+        <img src="r1.png" class="rose-img rose-br" alt="عکس گل رز">
+
+        <div class="card-content">
+            <div class="bismillah"> به نام خالق هستی </div>
+            <div class="invite-title">💐 مراسم بله برون 💐</div>
+            <div class="divider"></div>
+
+            <!-- حلقه‌های ازدواج -->
+            <div class="rings-container">
+                <img src="ring.png" class="rings-img" alt="حلقه‌های ازدواج">
+                <div class="ring-shine" style="top:12px; left:52px;"></div>
+                <div class="ring-shine" style="top:34px; right:38px; animation-delay:1.1s;"></div>
+            </div>
+
+            <div class="names">بهروز<span class="and"> و </span>ریحانه </div>
+
+            <div class="poem">
+                «دو قلب که یکی شد، دو روح که هم‌آغوش »<br>
+                خوشحالیم که در شادیِ ما سهمی دارید
+            </div>
+
+            <div class="date-box">📅 پنجشنبه 12 شهریور 1405 — ساعت 15:30
+                از درب منزل برای بردن خونچه
+            </div>
+
+            <div class="venue">
+                <strong> افتخار میزبانی شما را در ضیافت شام در منزل خودمان
+               (بین بوزقوچانی 2 و 4 منزل قاسمی)داریم </strong><br>
+             
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const envelope = document.getElementById('envelope');
+    const overlay = document.getElementById('cardOverlay');
+    let opened = false;
+
+    // ذرات براق پس‌زمینه
+    for (let i = 0; i < 40; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.top = Math.random() * 100 + 'vh';
+        s.style.animationDelay = Math.random() * 3 + 's';
+        s.style.animationDuration = (2 + Math.random() * 3) + 's';
+        document.body.appendChild(s);
+    }
+
+    // باز کردن پاکت
+    envelope.addEventListener('click', () => {
+        if (opened) return;
+        opened = true;
+
+        envelope.classList.add('open');
+
+        // نمایش کارت بعد از باز شدن پاکت
+        setTimeout(() => {
+            overlay.classList.add('show');
+            envelope.style.transition = 'opacity 0.6s, transform 0.6s';
+            envelope.style.opacity = '0';
+            envelope.style.transform = 'scale(0.7)';
+            startHearts();
+        }, 1900);
+    });
+
+    // قلب‌های شناور جشن
+    function startHearts() {
+        const hearts = ['❤️', '💖', '💕', '🌹', '💗', '✨', '💝', '💘'];
+        setInterval(() => {
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.fontSize = (16 + Math.random() * 22) + 'px';
+            h.style.animationDuration = (4 + Math.random() * 4) + 's';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 8000);
+        }, 700);
+    }
+    setTimeout(() => {
+    document.querySelector('.rings-container').style.animation = 'ringsFloat 3.5s ease-in-out infinite';
+}, 1800);
+</script>
+
+</body>
+</html>
