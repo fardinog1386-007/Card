@@ -292,6 +292,9 @@
     .main-card-overlay.show {
         opacity: 1;
         pointer-events: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        align-items: flex-start;
     }
 
     .wedding-card {
@@ -306,7 +309,8 @@
         text-align: center;
         transform: scale(0.3) translateY(200px);
         transition: transform 1s cubic-bezier(0.34, 1.4, 0.4, 1);
-        overflow: visible; /* برای دیده شدن کامل گل‌ها در خارج کادر */
+        overflow: visible;
+        margin: auto;
     }
 
     .main-card-overlay.show .wedding-card {
@@ -332,52 +336,45 @@
 
     /* ---------- عکس گل واقعی گوشه‌ها ---------- */
     .rose-img {
-    position: absolute;
-    width: 150px; /* یکم سایزش رو جمع‌وجورتر کردیم */
-    height: auto;
-    z-index: 20;
-    /* سایه نرم‌تر و طبیعی‌تر */
-    filter: drop-shadow(2px 8px 12px rgba(0, 0, 0, 0.25)); 
-    /* انیمیشن نرم‌تر با زمان طولانی‌تر */
-    animation: roseSway 6s ease-in-out infinite; 
-    pointer-events: none;
-}
-
-/* گل بالا-چپ */
-.rose-tl { 
-    top: -25px; 
-    left: -25px; 
-}
-
-/* گل پایین-راست */
-.rose-br { 
-    bottom: -25px; 
-    right: -25px; 
-    /* به جای چرخش ۱۸۰ درجه کامل، فقط قرینه‌اش می‌کنیم تا طبیعی بمونه */
-    transform: scaleX(-1) scaleY(-1); 
-    animation-name: roseSwayBr;
-    animation-delay: 3s; 
-}
-
-/* حرکت بسیار ملایم برای گل بالا */
-@keyframes roseSway {
-    0%, 100% { 
-        transform: rotate(0deg) translateY(0px) scale(1); 
+        position: absolute;
+        width: 150px;
+        height: auto;
+        z-index: 20;
+        filter: drop-shadow(2px 8px 12px rgba(0, 0, 0, 0.25)); 
+        animation: roseSway 6s ease-in-out infinite; 
+        pointer-events: none;
     }
-    50% { 
-        transform: rotate(2deg) translateY(-4px) scale(1.02); 
-    }
-}
 
-/* حرکت ملایم برای گل پایین */
-@keyframes roseSwayBr {
-    0%, 100% { 
-        transform: scaleX(-1) scaleY(-1) rotate(0deg) translateY(0px); 
+    .rose-tl { 
+        top: -25px; 
+        left: -25px; 
     }
-    50% { 
-        transform: scaleX(-1) scaleY(-1) rotate(-2deg) translateY(-4px); 
+
+    .rose-br { 
+        bottom: -25px; 
+        right: -25px; 
+        transform: scaleX(-1) scaleY(-1); 
+        animation-name: roseSwayBr;
+        animation-delay: 3s; 
     }
-}
+
+    @keyframes roseSway {
+        0%, 100% { 
+            transform: rotate(0deg) translateY(0px) scale(1); 
+        }
+        50% { 
+            transform: rotate(2deg) translateY(-4px) scale(1.02); 
+        }
+    }
+
+    @keyframes roseSwayBr {
+        0%, 100% { 
+            transform: scaleX(-1) scaleY(-1) rotate(0deg) translateY(0px); 
+        }
+        50% { 
+            transform: scaleX(-1) scaleY(-1) rotate(-2deg) translateY(-4px); 
+        }
+    }
 
     /* ---------- محتوای کارت ---------- */
     .card-content {
@@ -421,34 +418,31 @@
     }
 
     .rings-container {
-    margin: 15px auto -10px auto;
-    width: 300px;
-    height: 170px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-    opacity: 0;
-    
-    transition: clip-path 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
-}
+        margin: 15px auto -10px auto;
+        width: 100%;
+        max-width: 300px;
+        height: 170px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+        opacity: 0;
+        transition: clip-path 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+    }
 
-
-.main-card-overlay.show .rings-container {
-    opacity: 1;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    
-    transition-delay: 0.5s;
-}
+    .main-card-overlay.show .rings-container {
+        opacity: 1;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        transition-delay: 0.5s;
+    }
 
     .rings-img {
-        width: 100% !important;  
-        height: 100% !important;    
-        object-fit: contain;   
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
         filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.15));
-}
+    }
 
     @keyframes ringsFloat {
         0%, 100% { transform: translateY(0); }
@@ -537,8 +531,10 @@
         .rose-img { width: 130px; }
         .rose-tl { top: -25px; left: -25px; }
         .rose-br { bottom: -25px; right: -25px; }
+        .rings-container { max-width: 260px; height: 150px; }
     }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -596,7 +592,7 @@
             <div class="venue">
                 <strong> افتخار میزبانی شما را در ضیافت شام در منزل خودمان
                (بین بوزقوچانی 2 و 4 منزل قاسمی)داریم </strong><br>
-             
+
             </div>
         </div>
     </div>
@@ -635,7 +631,7 @@
         }, 1900);
     });
 
-    // قلب‌های شناور جشن
+    
     function startHearts() {
         const hearts = ['❤️', '💖', '💕', '🌹', '💗', '✨', '💝', '💘'];
         setInterval(() => {
